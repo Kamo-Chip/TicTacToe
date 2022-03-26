@@ -6,11 +6,30 @@ body{
     align-items: center;
 }
 
+#choice-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-style: solid;
+    height: 10rem;
+    width: 15rem;
+}
+
+#button-container{
+    padding: 1rem;
+}
+#button-container button{
+    height: 2rem;
+    width: 4rem;
+    margin: .2rem;
+    text-align: center;
+}
+
 #grid-container{
-    /* visibility: hidden; */
+    visibility: hidden;
     display: grid;
-    grid-template-columns: 200px 200px 200px;
-    grid-template-rows: 200px 200px 200px;
+    grid-template-columns: 5rem 5rem 5rem;
+    grid-template-rows: 5rem 5rem 5rem;
 }
 
 .grid-item{
@@ -21,9 +40,16 @@ body{
     border-style: solid; 
 }
 
-#player-details{
+#result{
+    visibility:hidden;
+    border-style: solid;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+#result button{
+    height: 2rem;
+    width: 4rem;
 }

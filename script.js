@@ -1,146 +1,158 @@
-const boxes = Array.from(document.getElementsByClassName("grid-item"))
+const boxes = Array.from(document.getElementsByClassName("grid-item"));
+const grid = document.getElementById("grid-container");
+const btnPlayer = document.getElementById("player");
+const btnPc = document.getElementById("pc");
+const choiceContainer = document.getElementById("choice-container");
+const result = document.getElementById("result");
+const restart = document.getElementById("restart");
 
-const gameBoard = (() =>{
+let isAgainstPc = false;
+
+const gameBoard = (() => {
     let board = ["", "", "", "", "", "", "", "", ""]
-    
-    return {board}
+
+    return { board }
 })()
 
-const displayController = (() =>{
-    
-    const displayBoard = () =>{
-        for(let i = 0; i < gameBoard.board.length; i++){
+const displayController = (() => {
+
+    const displayBoard = () => {
+        //console.log(boxes)
+        grid.style.visibility = "visible";
+        for (let i = 0; i < gameBoard.board.length; i++) {
+            
             boxes[i].innerText = gameBoard.board[i]
         }
     }
-    return {displayBoard}
+    return { displayBoard }
 })()
 
-const Player = (name, symbol) =>{
-
-    const getName = () => {return name}
-    const getSymbol = () => {return symbol}
-    return{getName, getSymbol}
+const Player = (symbol) => {
+    const getSymbol = () => { return symbol }
+    return { getSymbol }
 }
 
-const Game = (() =>{
-    // let playerOne
-    // let playerTwo
-    let playerOne = Player(prompt("Player 1 enter name"), prompt("Choose symbol"))
-    let playerTwo = Player(prompt("Player 2 enter name"), prompt("Choose symbol"))
+
+const Game = (() => {
     let count = 1
-    // const pcBtn = document.getElementById("pc")
-    //     const p2Btn = document.getElementById("p2")
-    //     p2Btn.addEventListener("click", playWithPlayer)
-    // const init = () =>{
-    //     //pcBtn.addEventListener("click", returnId)
-        
-    // }
+    let playerOne;
+    let playerTwo;
 
-    // const playWithPlayer = () =>{
-        
-    // }
-    const start = (e) =>{
-        
-        // console.log(e)
-        // const body = document.getElementsByTagName("body")
-        boxes.forEach(element => {
-            element.addEventListener("click", placeSymbol)
-        })
-
-        // if(returnId == "p2"){
-           
-        //     const playerDetails = document.createElement("div")
-        //     playerDetails.id = "player-details"
-    
-        //     const label1 = document.createElement("label")
-        //     label1.innerText = "Player 1"
-        //     const label2 = document.createElement("label")
-        //     label2.innerText = "Player 2"
-        //     const xBtn = document.createElement("button")
-        //     xBtn.innerText = "X"
-        //     const oBtn = document.createElement("button")
-        //     oBtn.innerText = "O"
-
-        //     playerDetails.append(label1, xBtn, oBtn)
-        //     body.append(playerDetails)
-        // }
-
-        displayController.displayBoard()
-
-    }
-
-    const placeSymbol= (e) =>{
-        if(e.target.innerText == ""){
-            if(count % 2 == 0){
-                boxes[e.target.id] = playerTwo.getSymbol()
+    const placeSymbol = (e) => {
+        if (e.target.innerText == "") {
+            if (count % 2 == 0) {
+                boxes[e.target.id].innerText = playerTwo.getSymbol()
                 e.target.innerText = playerTwo.getSymbol()
-            }else{
-                boxes[e.target.id] = playerOne.getSymbol()
+            } else {
+                boxes[e.target.id].innerText = playerOne.getSymbol()
                 e.target.innerText = playerOne.getSymbol()
             }
-            if(checkWin()){
-                if(count % 2 == 0){
-                    console.log(`${playerTwo.getName()} won!`)
-                }else{
-                    console.log(`${playerOne.getName()} won!`)
+            if (checkWin()) {
+                grid.style.visibility = "hidden";
+                result.style.height = "10rem";
+                result.style.width = "15rem";
+                if (count % 2 == 0) {
+                    result.innerText = `${playerTwo.getSymbol()} won!` ;
+                    result.style.visibility = "visible";
+                    result.appendChild(restart)
+                    //Game.start();     
+
+                } else {
+                    result.innerText = `${playerOne.getSymbol()} won!`;
+                    result.style.visibility = "visible";
+                    result.appendChild(restart)
+                    //Game.start()
                 }
             }
-            if(count == 9 && !checkWin()){
-                console.log("No winner!")
+            if (count == 9 && !checkWin()) {
+                result.innerText = `No winner!` ;
+                result.style.visibility = "visible";
+                result.appendChild(restart)
             }
             count++
         }
     }
 
-    const checkWin = () =>{
-        if(checkHorizontal() || checkVertical() || checkDiagonal()){
-            return true
+    const setUp = () =>{
+        if (!isAgainstPc){
+            playerOne = Player(prompt("Enter symbol:"));
+            playerTwo = Player(prompt("Enter symbol:"));
+
+            boxes.forEach(element => {
+                element.addEventListener("click", placeSymbol)
+            })
+
+            restart.addEventListener("click", ()=>{
+                result.style.innerText = "";
+                result.style.height = "0rem";
+                result.style.width = "0rem";
+                result.style.visibility = "hidden";
+                count = 1;
+                displayController.displayBoard()
+            })
+            Game.start()
+        }else{
+          //PC code goes here  
         }
     }
+
     
-    const checkHorizontal = () =>{
-        
-        if(boxes[0] == boxes[2] && boxes[2] == boxes[1] && boxes[0] != ""){
-            return true
-        }
-        if(boxes[3] == boxes[5] && boxes[5] == boxes[4] && boxes[3] != ""){
-            return true
-        }
-        if(boxes[6] == boxes[8] && boxes[8] == boxes[6] && boxes[6] != ""){
-            return true
-        }
-        return false
-    }
-
-    const checkVertical = () =>{
-        
-        if(boxes[0] == boxes[6] && boxes[6] == boxes[3] && boxes[0] != ""){
-            return true
-        }
-        if(boxes[1] == boxes[7] && boxes[7] == boxes[4] && boxes[1] != ""){
-            return true
-        }
-        if(boxes[2] == boxes[8] && boxes[8] == boxes[5] && boxes[2] != ""){
-            return true
-        }
-        return false
-    }
-
-    const checkDiagonal = () =>{
-        
-        if(boxes[0] == boxes[8] && boxes[8] == boxes[4] && boxes[0] != ""){
-            return true
-        }
-        if(boxes[2] == boxes[6] && boxes[6] == boxes[4] && boxes[2] != ""){
-            return true
-        }
-        return false
-    }
+    const start = () => {
+        choiceContainer.style.visibility = "hidden";
+     
     
+        displayController.displayBoard()
+    }
 
-    return {start}
+    const checkWin = () => {
+        if (checkHorizontal() || checkVertical() || checkDiagonal()) {
+            return true
+        }
+    }
+
+    const checkHorizontal = () => {
+
+        if (boxes[0].innerText == boxes[2].innerText && boxes[2].innerText == boxes[1].innerText && boxes[0].innerText != "") {
+            return true
+        }
+        if (boxes[3].innerText == boxes[5].innerText && boxes[5].innerText == boxes[4].innerText && boxes[3].innerText != "") {
+            return true
+        }
+        if (boxes[6].innerText == boxes[8].innerText && boxes[8].innerText == boxes[6].innerText && boxes[6].innerText != "") {
+            return true
+        }
+        return false
+    }
+
+    const checkVertical = () => {
+
+        if (boxes[0].innerText == boxes[6].innerText && boxes[6].innerText == boxes[3].innerText && boxes[0].innerText != "") {
+            return true
+        }
+        if (boxes[1].innerText == boxes[7].innerText && boxes[7].innerText== boxes[4].innerText && boxes[1].innerText != "") {
+            return true
+        }
+        if (boxes[2].innerText == boxes[8].innerText && boxes[8].innerText == boxes[5].innerText && boxes[2].innerText != "") {
+            return true
+        }
+        return false
+    }
+
+    const checkDiagonal = () => {
+
+        if (boxes[0].innerText == boxes[8].innerText && boxes[8].innerText == boxes[4].innerText && boxes[0].innerText != "") {
+            return true
+        }
+        if (boxes[2].innerText == boxes[6].innerText && boxes[6].innerText == boxes[4].innerText && boxes[2].innerText != "") {
+            return true
+        }
+        return false
+    }
+    return { start,setUp }
 })()
 
-Game.start()
-
+btnPc.addEventListener("click", () => {
+    isAgainstPc = true;
+    Game.start();
+});
+btnPlayer.addEventListener("click", Game.setUp)
